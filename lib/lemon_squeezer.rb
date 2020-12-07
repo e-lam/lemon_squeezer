@@ -34,6 +34,14 @@ module LemonSqueezer
     Card.new(params).money_in_with_card_id
   end
 
+  def self.card_money_in_web_init(params = {})
+    Card.new(params).money_in_web_init
+  end
+
+  def self.card_get_money_in_trans_details(params = {})
+    Card.new(params).get_money_in_trans_details
+  end
+
   def self.card_money_in(params = {})
     Card.new(params).money_in
   end
@@ -48,6 +56,14 @@ module LemonSqueezer
 
   def self.wallet_get_details(params = {})
     Wallet.new(params).get_details
+  end
+
+  def self.wallet_update_details(params = {})
+    Wallet.new(params).update_details
+  end
+
+  def self.wallet_get_trans_history(params = {})
+    Wallet.new(params).get_trans_history
   end
 
   def self.wallet_register(params = {})

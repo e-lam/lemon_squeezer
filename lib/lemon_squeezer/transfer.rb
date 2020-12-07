@@ -1,6 +1,6 @@
 module LemonSqueezer
   class Transfer
-    attr_accessor :id, :sender, :receiver, :iban, :iban_id, :amount, :debit, :credit, :commission, :status, :error, :message, :scheduled_date, :private_data, :auto_comission, :transfered_at
+    attr_accessor :id, :sender, :receiver, :iban, :iban_id, :amount, :debit, :credit, :commission, :status, :error, :message, :scheduled_date, :private_data, :auto_comission, :transfered_at, :config_name, :public_ip
 
     SEND_PAYMENT_PARAMS = %i(debitWallet creditWallet amount)
     MONEY_OUT_PARAMS = %i(wallet amountTot autoCommission)
@@ -14,10 +14,12 @@ module LemonSqueezer
       @scheduled_date = params[:scheduled_date]
       @private_data   = params[:private_data]
       @auto_comission = params[:auto_comission]
+      @config_name    = params[:config_name] || :DEFAULT
+      @public_ip      = params[:public_ip]
     end
 
     def send_payment
-      request = Request.new(SEND_PAYMENT_PARAMS, send_payment_params, send_payment_message, :send_payment, :trans)
+      request = Request.new(SEND_PAYMENT_PARAMS, send_payment_params, send_payment_message, self.config_name, self.public_ip, :send_payment, :trans)
 
       Response.new(request).submit do |result, error|
         if result
@@ -36,7 +38,7 @@ module LemonSqueezer
     end
 
     def money_out
-      request = Request.new(MONEY_OUT_PARAMS, money_out_params, money_out_message, :money_out, :trans)
+      request = Request.new(MONEY_OUT_PARAMS, money_out_params, money_out_message, self.config_name, self.public_ip, :money_out, :trans)
 
       Response.new(request).submit do |result, error|
         if result
@@ -69,7 +71,7 @@ module LemonSqueezer
 
     def send_payment_message
       message = send_payment_params.merge!(
-                  version: '1.0'
+                  version: '2.5'
                 )
 
       message.merge!(message: self.message) if self.message
@@ -91,7 +93,7 @@ module LemonSqueezer
 
     def money_out_message
       message = money_out_params.merge!(
-                  version: '1.3'
+                  version: '2.5'
                 )
 
       message.merge!(amountCom: self.commission) if self.commission
