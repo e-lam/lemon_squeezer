@@ -18,6 +18,7 @@ module LemonSqueezer
             wsdl: self.configs[config_name][:directkit_wsdl]
         }
         prms[:proxy] = self.configs[config_name][:proxy] if self.configs[config_name][:proxy]
+        prms[:logger] = self.configs[config_name][:logger] if self.configs[config_name][:logger]
         @clients[config_name] = Savon.client(prms)
       end
       @clients[config_name]
